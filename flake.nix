@@ -1,24 +1,24 @@
 {
-  description = "PureWave";
-
+  description = "PureWave: Haskell Synthesizer";
   inputs = {
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
-
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ];
-      flake = {};
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-        devShells.default = pkgs.mkShell {
+  outputs =
+    { nixpkgs-unstable, ... }:
+    let
+      system = "aarch64-darwin";
+    in
+    {
+      devShells.${system}.default =
+        let
+          pkgs = import nixpkgs-unstable { inherit system; };
+        in
+        pkgs.mkShell {
           packages = with pkgs; [
-            (haskellPackages.ghcWithPackages (hp : with hp; [
+            (haskellPackages.ghcWithPackages (hp: with hp; [
               random
             ]))
           ];
         };
-      };
     };
 }
