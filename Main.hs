@@ -22,6 +22,6 @@ overtones =
     volumes = [1 - i / count | i <- [0 ..]]
 
 main :: IO ()
-main = play $ clamp $ (* 0.3) <$> Signal.seq loop
+main = play $ clamp $ pure 0.3 * Signal.seq loop
   where
     loop = (attack 2 <*> major, 3) : (beat, 3) : (overtones, 3) : loop

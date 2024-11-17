@@ -5,6 +5,7 @@ import qualified Data.ByteString.Lazy as BL
 import Data.List
 import System.IO
 import System.Process
+import System.Random
 
 type Seconds = Float
 type Pulse = Float
@@ -68,6 +69,9 @@ triangle hz = Sig (\t -> 4 * abs (t * hz - down (t * hz + 3 / 4) + 1 / 4) - 1)
 
 saw :: Hz -> Signal Pulse
 saw hz = Sig (\t -> 2 * (t * hz - down (t * hz + 1 / 2)))
+
+whiteNoise :: Signal Pulse
+whiteNoise = Sig $ fst . randomR (-1.0, 1.0) . mkStdGen . floor . (* sampleRate)
 
 seq :: [(Signal Pulse, Seconds)] -> Signal Pulse
 seq signals = Sig $ \t -> go signals t t
